@@ -1,0 +1,27 @@
+.App{
+    width: 100vw;
+    height: 100vh;
+    border: 1px solid blue;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+ .Dark{
+    color: #fff;
+    background-color: #000;
+}
+ .Pink{
+
+    color: #fff;
+    background-color: pink;
+ }
+
+ .Gray{
+    color: #fff;
+    background-color: gray;
+ }
