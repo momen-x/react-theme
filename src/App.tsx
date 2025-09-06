@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useReducer } from 'react';
 import './theme.css'
 
 const themes = [
@@ -8,17 +8,83 @@ const themes = [
   "Light"
 ]
 
+interface IState {
+  theme: string;
+  count: number;
+  field: string;
+}
+
+interface IAction {
+  type: string;
+  theme?: string;
+  count?: number;
+  field?: string;
+}
+
+// Reducer function
+const reducer = (state: IState, action: IAction): IState => {
+  switch (action.type) {
+    case "SET_THEME":
+      return {
+        ...state,
+        theme: action.theme || ""
+      }
+    case "TOGGLE_THEME":
+      return {
+        ...state,
+        theme: state.theme === "Dark" ? "" : "Dark"
+      }
+    case "INCREMENT_COUNT":
+      return {
+        ...state,
+        count: state.count + 1
+      }
+    case "TOGGLE_FIELD":
+      return {
+        ...state,
+        field: state.field === "front end" ? "back end" : "front end"
+      }
+    default:
+      return state;
+  }
+}
+
+
+
 function App() {
-  const [theme, setTheme] = useState("");
-  const [count, setCount] = useState(0)
-  const [field, setField] = useState("front end");
+// const [allData,setAllData]=useState<IState>({
+//   theme:"",
+//   count:0,
+//   field:"front end",
+// })
+  // const handleChangeStat = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   field: string
+  // ) => {
+  //   setAllData({
+  //     ...allData,
+  //     [field]: e.target.value,
+  //   }));
+  // };
+
+  const [allData, dispatch] = useReducer(reducer, {
+    theme: "",
+    count: 0,
+    field: "front end"
+  });
 
   return (
-    <div className={`App ${theme}`}>
+    <div className={`App ${allData.theme}`}>
+     {/*  TOGGLE MODE (DARK AND LIGHT) BUTTON */}
       <div>
-           {/* <button onClick={()=>setTheme(theme==="Dark"?"":"Dark")} style={{margin:"5px"}}>Toogle Theme</button> */}
         <label className="theme-switch">
-          <input type="checkbox" className="theme-switch__checkbox"  onClick={()=>setTheme(theme==="Dark"?"":"Dark")} style={{margin:"5px"}}/>
+          <input 
+            type="checkbox" 
+            className="theme-switch__checkbox"
+            onChange={() => dispatch({ type: "TOGGLE_THEME" })}
+            // onChangeCapture={()=>{setAllData({...allData,theme:theme==="Dark"?"":"Dark"})}}}
+            checked={allData.theme === "Dark"}
+          />
           <div className="theme-switch__container">
             <div className="theme-switch__clouds"></div>
             <div className="theme-switch__stars-container">
@@ -40,16 +106,18 @@ function App() {
       </div>
 
       {/* Theme buttons */}
-      <div style={{display: "flex", gap: "10px", justifyContent: "center", alignItems: "start", height: "200px", marginTop: "20px"}}>
+      <div style={{display: "flex", gap: "10px", justifyContent: "center", alignItems: "start", height: "200px", marginTop: "20px", flexWrap: "wrap"}}>
         {themes.map((item) => {
           return (
-            <div key={item} style={{display: "flex", width: "100px"}}> 
+            <div key={item} style={{display: "flex"}}> 
               <button 
-                onClick={() => setTheme(item)} 
+                onClick={() => dispatch({ type: "SET_THEME", theme: item })}
+                // onClick={() => setAllData({ ...allData, theme: item })}
                 style={{
                   border: "1px solid blue", 
                   padding: "10px", 
                   borderRadius: "5px",
+                  cursor: "pointer"
                 }}
               >
                 {item}
@@ -59,24 +127,29 @@ function App() {
         })}
       </div>
 
-      <div style={{margin: "20px"}}>
-        <button onClick={() => setCount((count) => count + 1)} style={{padding: "10px 20px"}}>
-          count is {count}
+{/* INCREMENT BUTTON */}
+      <div style={{margin: "20px", textAlign: "center"}}>
+        <button
+          onClick={() => dispatch({ type: "INCREMENT_COUNT" })}
+          // onClick={() => setAllData({ ...allData, count: allData.count + 1 })}
+          style={{padding: "10px 20px", cursor: "pointer"}}>
+          count is {allData.count}
         </button>
       </div>
-      
+      {/* TOGGLE FIELD BUTTON */}
       <div style={{display: "flex", flexDirection: "column", gap: "10px", alignItems: "center"}}>
         <input 
           type="text" 
           style={{padding: "15px", borderRadius: '5px', width: "300px"}} 
           readOnly 
-          value={`your field is ${field}`} 
+          value={`your field is ${allData.field}`} 
         />
         <button 
-          onClick={() => setField(field === "front end" ? "back end" : "front end")}
-          style={{padding: "10px 20px"}}
+          onClick={() => dispatch({ type: "TOGGLE_FIELD" })}
+          // onClick={() => setAllData({ ...allData, field: allData.field === "front end" ? "back end" : "front end" })}
+          style={{padding: "10px 20px", cursor: "pointer"}}
         >
-          update your field to: {field === "front end" ? "back end" : "front end"}
+          update your field to: {allData.field === "front end" ? "back end" : "front end"}
         </button>
       </div>
     </div>
