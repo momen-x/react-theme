@@ -48,27 +48,26 @@ const reducer = (state: IState, action: IAction): IState => {
 }
 
 const HomePage = () => {
-  const { toggleTheme, theme: contextTheme } = useContext(FirstContext);
+  const { toggleTheme, theme } = useContext(FirstContext);
+  console.log("from home page",theme);
+  
   const [allData, dispatch] = useReducer(reducer, {
     theme: "",
     count: 0,
     field: "front end"
   });
+  console.log("from home page ",allData.theme);
 
   const handleThemeToggle = () => {
     dispatch({ type: "TOGGLE_THEME" });
     toggleTheme(allData.theme);
   };
 
-  // const handleSetTheme = (theme: string) => {
-  //   dispatch({ type: "SET_THEME", theme });
-  //   toggleTheme(theme);
-  //   console.log(allData.theme);
-    
-  // };
+
+
 
   return (
-    <div className={`App ${allData.theme} ${contextTheme}`}>
+    <div className={`App ${theme} `}>
       {/* TOGGLE MODE (DARK AND LIGHT) BUTTON */}
       <div>
         <label className="theme-switch">
@@ -76,7 +75,7 @@ const HomePage = () => {
             type="checkbox" 
             className="theme-switch__checkbox"
             onChange={handleThemeToggle}
-            checked={allData.theme === "Dark"}
+            checked={theme === "Dark"}
           />
           <div className="theme-switch__container">
             <div className="theme-switch__clouds"></div>
